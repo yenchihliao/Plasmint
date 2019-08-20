@@ -1,3 +1,5 @@
+The backup project forked from omesigo/plasma_cash. The consensus part is modified to Tendermint.
+
 # Dependency Prerequisite
 Solidity 0.4.24
 Python 3.6+
