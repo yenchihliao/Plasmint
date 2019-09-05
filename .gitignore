@@ -5,3 +5,7 @@ contract_data/
 .pytest_cache/
 .db/
 .coverage
+write-file-*
+**/data/*.db/
+**/data/cs.wal
+.DS_Store

@@ -31,7 +31,7 @@ def index():
     <b>SendTransaction</b>
     <form action="/sendTransaction">
     key: <input type="text" name="key" value="0xe4807cf08191b310fe1821e6e5397727ee6bc694e92e25115eca40114e3a4e6b"><br>
-    preBlock: <input type="text" name="preBlock" value=""><br>
+    <!--preBlock: <input type="text" name="preBlock" value=""><br>-->
     uid: <input type="text" name="uid" value="1693390459388381052156419331572168595237271043726428428352746834777341368960"><br>
     amount: <input type="text" name="amount" value="10"><br>
     receiver: <input type="text" name="receiver" value="0x08d92dca9038ea9433254996a2d4f08d43be8227"><br>
@@ -93,7 +93,8 @@ def sendTransaction():
     print('sendTransaction')
     #TODO
     userA = Client(container.get_root_chain(), container.get_child_chain_client()    , request.args.get('key'))
-    userA.send_transaction(int(request.args.get('preBlock')), int(request.args.get('uid')), int(request.args.get('amount')), request.args.get('receiver'))
+    preblock = requests.post("http://127.0.0.1:26657/status").json()['result']['sync_info']['latest_block_height']
+    userA.send_transaction(int(preblock), int(request.args.get('uid')), int(request.args.get('amount')), request.args.get('receiver'))
     return '0'
 
 #key        : account private key

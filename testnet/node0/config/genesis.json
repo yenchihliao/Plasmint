@@ -1,0 +1,31 @@
+{
+  "genesis_time": "2019-09-04T07:52:18.4938769Z",
+  "chain_id": "test-chain-g2NNxY",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "22020096",
+      "max_gas": "-1",
+      "time_iota_ms": "1000"
+    },
+    "evidence": {
+      "max_age": "100000"
+    },
+    "validator": {
+      "pub_key_types": [
+        "ed25519"
+      ]
+    }
+  },
+  "validators": [
+    {
+      "address": "4FDD3AB1E456916CBFD91D7E5ED16CBC3A7957B7",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "yxc0qkgE5MNBvaTag987dglj4qEFUJpEeURNblQTGNw="
+      },
+      "power": "10",
+      "name": ""
+    }
+  ],
+  "app_hash": ""
+}
