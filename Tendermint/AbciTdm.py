@@ -24,7 +24,7 @@ operator_key = '0xa18969817c2cefadf52b93eb20f917dce760ce13b2ac9025e0361ad1e7a1d4
 operator_normalize_key = utils.normalize_key(operator_key)
 authority = utils.privtoaddr(operator_key)
 authority_address = w3.toChecksumAddress('0x' + authority.hex())
-f = open('config.json', 'r')
+f = open('../config.json', 'r')
 config = json.load(f)
 f.close()
 

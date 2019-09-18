@@ -2,7 +2,7 @@ The backup project forked from omesigo/plasma_cash. The consensus part is modifi
 # Dependency Prerequisite
 
 * Solidity 0.4.24
-* Python 3.6+
+* Python 3.6+ (Any insatllation problems with python and pip here has solution at [OSModuleinstall](https://github.com/yenchihliao/OSModuleInstall))
 * ganache-cli 6.1.2+
 
 ## [LevelDB](https://github.com/google/leveldb)
@@ -62,13 +62,11 @@ Install [Node.js](https://nodejs.org/en/download/). Then,
 $ npm install -g ganache-cli
 ```
 
-## [Python 3.5+](https://github.com/yenchihliao/OSModuleInstall)
-
 ## Python modules
 
 * Install requirements:
 ```bash
-pip install -r requirements.txt
+pip install --user -r requirements.txt
 ```
 # Config
 There are multiple ports that are needed for a single Plasmint node. Use `lsof -i:[port]` command to make sure these ports aren't occupied:
@@ -88,33 +86,35 @@ To customize these ports, modify config.json and your Tendermint config file cou
 
 **Python used below are all python3.6+**
 
-1. Ganache-cli command to start a simulated chain:
+1. RootChain:
+If a rootchain of ganache-cli which is initilized with plasma_cash is not used, make sure to modify private key for operator(op_Key) in `config.json`.  
+To interact with rootchain, use `geth attach http://127.0.0.1:8545`.
 ```bash
+# ganache-cli simulates a root chain
 ganache-cli -m=plasma_cash
-```
-2. Deploy plasma contract:
-```bash
+# deploy plasma_cash contract on the root chain
 python deployment.py
 ```
-3. Run child chain Server:
+2. ChainChain:
 ```bash
+# starts the child_chain node of plasma_cash
 python -m plasma_cash.child_chain
 ```
-4. Run app for ABCI:
+3. Tendermint:
 ```bash
-python AbciTdm.py
+# starts ABCI for tendermint node
+python Tendermint/AbciTdm.py
+# initialize and run a tendermint node
+./Tendermint/NodeTdm.sh [TendermintConfigDirectory]
 ```
-5. Start Tendermint Node 
-```bash
-./NodeTdm.sh [TendermintConfigDirectory]
-```
-6. Submit Block to mainchain
+4. Submit Block to mainchain
 ```bash
 python operator.py
 ```
 
-7. (Optional) For demo:
+5. (Optional) For demo:
 ```bash
 python server.py
 ```
+
 
