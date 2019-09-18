@@ -95,7 +95,7 @@ ganache-cli -m=plasma_cash
 # deploy plasma_cash contract on the root chain
 python deployment.py
 ```
-2. ChainChain:
+2. childChain:
 ```bash
 # starts the child_chain node of plasma_cash
 python -m plasma_cash.child_chain
