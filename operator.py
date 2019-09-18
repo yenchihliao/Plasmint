@@ -17,13 +17,13 @@ last_block = 1
 plasma_latest_block = 0
 last_submit_block = 0
 
-operator_key = '0xa18969817c2cefadf52b93eb20f917dce760ce13b2ac9025e0361ad1e7a1d448'
-authority = utils.privtoaddr(operator_key)
-authority_address = w3.toChecksumAddress('0x' + authority.hex())
-root_chain = Deployer().get_contract('RootChain/RootChain.sol')
 f = open('config.json', 'r')
 config = json.load(f)
 f.close()
+operator_key = config['op_Key']
+authority = utils.privtoaddr(operator_key)
+authority_address = w3.toChecksumAddress('0x' + authority.hex())
+root_chain = Deployer().get_contract('RootChain/RootChain.sol')
 
 twothirds = 1
 

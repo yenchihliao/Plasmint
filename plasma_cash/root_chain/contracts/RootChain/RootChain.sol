@@ -62,7 +62,7 @@ contract RootChain {
         depositCount = 0;
         currentBlkNum = 0;
 
-        authorityAddr.push(0x3B0884f4E50e9BC2CE9b224aB72feA89a81CDF7c);
+        authorityAddr.push(authority);
     }
 
     function checkAddr(address addr) returns (bool) {

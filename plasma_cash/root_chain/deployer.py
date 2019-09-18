@@ -3,10 +3,16 @@ import os
 
 from solc import compile_standard
 from web3.auto import w3
+from ethereum import utils
 
-from plasma_cash.config import plasma_config
+# from plasma_cash.config import plasma_config
+import json
 
 OWN_DIR = os.path.dirname(os.path.realpath(__file__))
+f = open(OWN_DIR+'/../../config.json', 'r')
+config = json.load(f)
+f.close()
+contractAddr = ''
 
 
 class Deployer(object):
@@ -49,8 +55,8 @@ class Deployer(object):
         abi, bytecode, contract_name = self.compile_contract(path, args)
         contract = w3.eth.contract(abi=abi, bytecode=bytecode)
 
-        address = w3.toChecksumAddress(plasma_config['AUTHORITY'].hex())
-        key = plasma_config['AUTHORITY_KEY']
+        key = bytes.fromhex(config['op_Key'][2:])
+        address = w3.toChecksumAddress(utils.privtoaddr(key))
         tx = contract.constructor().buildTransaction({
             'from': address,
             'nonce': w3.eth.getTransactionCount(address, 'pending')
@@ -61,12 +67,13 @@ class Deployer(object):
 
         print('Successfully deployed {} contract with tx hash {} in contract address {}!'.format(
             contract_name, tx_hash.hex(), tx_receipt.contractAddress))
+        contractAddr = tx_receipt.contractAddress
 
     def get_contract(self, path):
         file_name = path.split('/')[1]
         abi = json.load(open('contract_data/%s.json' % (file_name.split('.')[0])))
         contract = w3.eth.contract(
-            address=w3.toChecksumAddress(plasma_config['ROOT_CHAIN_CONTRACT_ADDRESS']),
+            address=w3.toChecksumAddress(contractAddr),
             abi=abi
         )
         return contract

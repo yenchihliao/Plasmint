@@ -9,3 +9,4 @@ write-file-*
 **/data/*.db/
 **/data/cs.wal
 .DS_Store
+.*.swp
