@@ -23,12 +23,13 @@ f.close()
 operator_key = config['op_Key']
 authority = utils.privtoaddr(operator_key)
 authority_address = w3.toChecksumAddress('0x' + authority.hex())
-root_chain = Deployer().get_contract('RootChain/RootChain.sol')
+root_chain = Deployer().get_contract('RootChain/RootChainSimple.sol')
 
 twothirds = 1
 
 
 class Block(object):
+    '''
     def __init__(self, blkRoot, blkNum, isDepositBlock, depositTx, depositTxProof):
         self.blkRoot = blkRoot
         self.blkNum = blkNum
@@ -36,7 +37,10 @@ class Block(object):
         self.depositTx = depositTx
         self.depositTxProof = depositTxProof
         self.signature = set()
-
+    '''
+    def __init__(self, apphash):
+        self.hash = apphash
+    '''
     def add_signature(self, signature):
         self.signature.add(signature)
 
@@ -44,10 +48,12 @@ class Block(object):
         if len(self.signature) >= twothirds:
             return True
         return False
-
+    '''
     def submit(self):
-        siglist = list(self.signature)
+        #siglist = list(self.signature)
         tx = root_chain.functions.submitBlock(
+            self.hash
+            '''
             self.blkRoot,
             self.blkNum,
             self.isDepositBlock,
@@ -56,11 +62,12 @@ class Block(object):
             [int(siglist[0][128:130], 16)],
             [bytes.fromhex(siglist[0][0:64])],
             [bytes.fromhex(siglist[0][64:128])]
+            '''
         ).buildTransaction({
             'from': authority_address,
             'nonce': w3.eth.getTransactionCount(authority_address, 'pending')
         })
-        print('submit block', self.blkNum)
+        print('submit block of', self.hash)
         signed = w3.eth.account.signTransaction(tx, operator_key)
         w3.eth.sendRawTransaction(signed.rawTransaction)
 
@@ -85,6 +92,9 @@ if __name__ == '__main__':
             print('blk', blk)
             tdm_block = get_tendermint_block(blk)
             apphash = tdm_block['result']['block_meta']['header']['app_hash']
+
+            Block(apphash).submit();
+            '''
             sedes = CountableList(List([rlp.sedes.binary,
                 rlp.sedes.big_endian_int,
                 rlp.sedes.big_endian_int,
@@ -103,13 +113,14 @@ if __name__ == '__main__':
                     blkNum = int(decoded_tx[130:], 16)
                     block[blkNum].add_signature(sig)
                 # block[i[1]].submit()
-
+            '''
         last_block = latest
-
+        '''
         for blk in range(last_submit_block + 1, plasma_latest_block + 1):
             if block[blk].check_signature_num():
                 block[blk].submit()
                 last_submit_block = blk
             else:
                 break
+        '''
         time.sleep(5)

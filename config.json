@@ -1,9 +1,10 @@
 {
 	"chain_IP":"127.0.0.1",
 	"child_chain":"8546", 
-	"tdm_IP":"127.0.0.1",
+	"tdm_IP":"10.91.4.76",
 	"tdm_ABCI":"26658", 
 	"tdm_RPC":"26657",
 	"tdm_p2p":"26656",
+	"tdm_node_num":"1",	
 	"op_Key":"0xa18969817c2cefadf52b93eb20f917dce760ce13b2ac9025e0361ad1e7a1d448"
 }
