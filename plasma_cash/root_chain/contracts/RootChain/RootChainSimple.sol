@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-contract RootChain {
+contract RootChainSimple {
 	mapping(bytes32 => int) private hashIndex;
 	bytes32[] public apphash;
 	int count;
@@ -24,9 +24,9 @@ contract RootChain {
 
 
 	function submitBlock(bytes32 hash) public isAuthority {
-		require(hashIndex[hash] == 0);
 		apphash.push(hash);
-		hashIndex[hash] = count + 1;
+		hashIndex[hash] *= 100;
+		hashIndex[hash] += count + 1;
 		count += 1;
 	}
 

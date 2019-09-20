@@ -53,21 +53,20 @@ class Block(object):
         #siglist = list(self.signature)
         tx = root_chain.functions.submitBlock(
             self.hash
-            '''
-            self.blkRoot,
-            self.blkNum,
-            self.isDepositBlock,
-            self.depositTx,
-            self.depositTxProof,
-            [int(siglist[0][128:130], 16)],
-            [bytes.fromhex(siglist[0][0:64])],
-            [bytes.fromhex(siglist[0][64:128])]
-            '''
+        #    self.blkRoot,
+        #    self.blkNum,
+        #    self.isDepositBlock,
+        #    self.depositTx,
+        #    self.depositTxProof,
+        #    [int(siglist[0][128:130], 16)],
+        #    [bytes.fromhex(siglist[0][0:64])],
+        #    [bytes.fromhex(siglist[0][64:128])]
+        
         ).buildTransaction({
             'from': authority_address,
             'nonce': w3.eth.getTransactionCount(authority_address, 'pending')
         })
-        print('submit block of', self.hash)
+        print('submiting block of', self.hash)
         signed = w3.eth.account.signTransaction(tx, operator_key)
         w3.eth.sendRawTransaction(signed.rawTransaction)
 

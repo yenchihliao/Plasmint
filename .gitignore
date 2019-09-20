@@ -10,3 +10,4 @@ write-file-*
 **/data/cs.wal
 .DS_Store
 .*.swp
+addr.txt

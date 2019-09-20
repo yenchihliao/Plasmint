@@ -7,6 +7,7 @@ from ethereum import utils
 
 # from plasma_cash.config import plasma_config
 import json
+import sys
 
 OWN_DIR = os.path.dirname(os.path.realpath(__file__))
 f = open(OWN_DIR+'/../../config.json', 'r')
@@ -24,17 +25,20 @@ class Deployer(object):
         for r, d, f in os.walk(abs_contract_path):
             for file in f:
                 extra_args.append([file, [os.path.realpath(os.path.join(r, file))]])
+                #print("extra_args, ", [file, [os.path.realpath(os.path.join(r, file))]])
 
         contracts = {}
         for contract in extra_args:
             contracts[contract[0]] = {'urls': contract[1]}
         path = '{}/{}'.format(abs_contract_path, path)
+        sys.stdout.flush()
         return path, contracts
 
     def compile_contract(self, path, args=()):
         file_name = path.split('/')[1]
         contract_name = file_name.split('.')[0]
         path, contracts = self.get_dirs(path)
+        #print({**{path.split('/')[-1]: {'urls': [path]}}, **contracts})
         compiled_sol = compile_standard({
             'language': 'Solidity',
             'sources': {**{path.split('/')[-1]: {'urls': [path]}}, **contracts},
@@ -65,13 +69,20 @@ class Deployer(object):
         tx_hash = w3.eth.sendRawTransaction(signed.rawTransaction)
         tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
 
+        contractAddr = tx_receipt.contractAddress
+        f = open('addr.txt', 'w')
+        f.write(contractAddr)
+        f.close()
         print('Successfully deployed {} contract with tx hash {} in contract address {}!'.format(
             contract_name, tx_hash.hex(), tx_receipt.contractAddress))
-        contractAddr = tx_receipt.contractAddress
 
     def get_contract(self, path):
         file_name = path.split('/')[1]
         abi = json.load(open('contract_data/%s.json' % (file_name.split('.')[0])))
+        f = open('addr.txt', 'r')
+        contractAddr = f.read()
+        f.close()
+        print('contractAddr: ', type(contractAddr), contractAddr)
         contract = w3.eth.contract(
             address=w3.toChecksumAddress(contractAddr),
             abi=abi
