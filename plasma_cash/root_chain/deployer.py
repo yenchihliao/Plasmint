@@ -3,6 +3,7 @@ import os
 
 from solc import compile_standard
 from web3.auto import w3
+from web3 import Web3
 from ethereum import utils
 
 # from plasma_cash.config import plasma_config
@@ -13,6 +14,7 @@ OWN_DIR = os.path.dirname(os.path.realpath(__file__))
 f = open(OWN_DIR+'/../../config.json', 'r')
 config = json.load(f)
 f.close()
+www = Web3(w3.HTTPProvider("http://{}:{}".format(config['root_addr'], config['root_IP'])))
 contractAddr = ''
 
 
@@ -57,17 +59,17 @@ class Deployer(object):
 
     def deploy_contract(self, path, args=(), gas=4410000):
         abi, bytecode, contract_name = self.compile_contract(path, args)
-        contract = w3.eth.contract(abi=abi, bytecode=bytecode)
+        contract = www.eth.contract(abi=abi, bytecode=bytecode)
 
         key = bytes.fromhex(config['op_Key'][2:])
-        address = w3.toChecksumAddress(utils.privtoaddr(key))
+        address = www.toChecksumAddress(utils.privtoaddr(key))
         tx = contract.constructor().buildTransaction({
             'from': address,
-            'nonce': w3.eth.getTransactionCount(address, 'pending')
+            'nonce': www.eth.getTransactionCount(address, 'pending')
         })
-        signed = w3.eth.account.signTransaction(tx, key)
-        tx_hash = w3.eth.sendRawTransaction(signed.rawTransaction)
-        tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+        signed = www.eth.account.signTransaction(tx, key)
+        tx_hash = www.eth.sendRawTransaction(signed.rawTransaction)
+        tx_receipt = www.eth.waitForTransactionReceipt(tx_hash)
 
         contractAddr = tx_receipt.contractAddress
         f = open('addr.txt', 'w')
@@ -83,8 +85,8 @@ class Deployer(object):
         contractAddr = f.read()
         f.close()
         print('contractAddr: ', type(contractAddr), contractAddr)
-        contract = w3.eth.contract(
-            address=w3.toChecksumAddress(contractAddr),
+        contract = www.eth.contract(
+            address=www.toChecksumAddress(contractAddr),
             abi=abi
         )
         return contract

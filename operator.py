@@ -9,6 +9,7 @@ from plasma_cash.client.client import Client
 from plasma_cash.dependency_config import container
 from plasma_cash.utils.utils import sign
 from plasma_cash.root_chain.deployer import Deployer
+from web3 import Web3
 
 from ethereum import utils
 import time
@@ -24,7 +25,7 @@ operator_key = config['op_Key']
 authority = utils.privtoaddr(operator_key)
 authority_address = w3.toChecksumAddress('0x' + authority.hex())
 root_chain = Deployer().get_contract('RootChain/RootChainSimple.sol')
-
+www = Web3(w3.HTTPProvider("http://{}:{}".format(config['root_addr'], config['root_IP'])))
 twothirds = 1
 
 
@@ -40,6 +41,7 @@ class Block(object):
     '''
     def __init__(self, apphash):
         self.hash = apphash
+
     '''
     def add_signature(self, signature):
         self.signature.add(signature)
@@ -64,11 +66,11 @@ class Block(object):
         
         ).buildTransaction({
             'from': authority_address,
-            'nonce': w3.eth.getTransactionCount(authority_address, 'pending')
+            'nonce': www.eth.getTransactionCount(authority_address, 'pending')
         })
         print('submiting block of', self.hash)
-        signed = w3.eth.account.signTransaction(tx, operator_key)
-        w3.eth.sendRawTransaction(signed.rawTransaction)
+        signed = www.eth.account.signTransaction(tx, operator_key)
+        www.eth.sendRawTransaction(signed.rawTransaction)
 
 
 def tendermint_latest_block():
